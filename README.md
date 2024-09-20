@@ -7,7 +7,7 @@ Project and source files related to the Streaming Instability Code Comparison ([
 
 ### Project files
 
-Jupyter Notebooks to generate the manuscript figures can be found in the [`/ipynb`](/tree/main/ipynb) directory.
+[Jupyter Notebooks](https://jupyter.org/) containing [Python](https://www.python.org/) scripts to generate the manuscript figures can be found in the [`/ipynb`](/tree/main/ipynb) directory.
 To be consistent with the structure of the Streaming Instability Code Comparison Problem Set document (see Section 1.2), the subdirectories within are hierarchically organized by *model* (e.g., [`/unstratified`](/tree/main/ipynb/unstratified)), by *problem* (e.g., [`../BA`](/tree/main/ipynb/unstratified/BA)), then by *variation* (e.g., [`../../np1`](/tree/main/ipynb/unstratified)).
 
 
