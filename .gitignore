@@ -1,0 +1,6 @@
+# Project related
+data/
+ipynb/figs/
+
+# VS Code
+*.code-workspace
