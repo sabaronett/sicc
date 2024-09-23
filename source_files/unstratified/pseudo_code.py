@@ -1,35 +1,54 @@
-#!/usr/bin/env python3
-#==============================================================================
-# athena_opac.py
+#===============================================================================
+# pseudo_code.py
 #
-# Creates multifrequency opacity tables for input into Athena++.
-#
-# This script takes as input (1) a RADMC-3D-formatted opacity table with the
-# filename structure `dustkappa_*.inp` (see https://www.ita.uni-heidelberg.de/
-# ~dullemond/software/radmc-3d/manual_radmc3d/
-# inputoutputfiles.html#the-dustkappa-inp-files); (2) an Athena++-formatted
-# input file with the following requred parameters:
-#   <radiation>
-#   n_frequency      # no. of frequency groups
-#   frequency_min    # [0, \nu_min) [k_BT_0/h] < 0 < [Hz]
-#   frequency_max    (if n_frequency > 2) # [\nu_max, \inf)
-#
-#   <problem>
-#   n_temperature    # no. of temperature groups
-#   temperature_min  # min mean opacity temperature [K]
-#   temperature_max  # max mean opacity temperature [K]
+# Pseudo code for the unstratified disk model.
 #
 # Author: Stanley A. Baronett
-# Created: 2024-04-19
-# Updated: 2024-08-20
-#==============================================================================
+# Created: 2024-09-22
+# Updated: 2024-09-22
+#===============================================================================
+
 import numpy as np
-from pathlib import Path
-from radmc3dPy import analyze
-from radmc3dPy.natconst import *
-from scipy import integrate
-from scipy.constants import c, h, k
-import sys
-sys.path.insert(0,'/home/stanley/github/PrincetonUniversity/athena/vis/python')
-import athena_read
-import warnings
+
+Nx, Ny, Nz = 512, 1, 512          # Number of cells in x, y, z
+grid = np.zeros((Nx, Ny, Nz))     # Grid coordinates
+rhog = np.zeros((Nx, Ny, Nz))     # Gas density
+rhogu = np.zeros((3, Nx, Ny, Nz)) # Gas momenta along x, y, then z
+
+
+# Lagrangian dust particles
+np = 1
+Np = np*Nx*Ny*Nz
+particles = np.zeros(np)
+
+def GasSourceTerms():
+    """Adds source terms to the gas.
+
+    Apply the Coriolis and centrifugal forces, and linear gravity from the star,
+    and the background radial pressure gradient.
+    """
+    for k in grid[0, 0, :]:
+        for j in grid[0, :, 0]:
+            for i in grid[:, 0, 0]:
+                Real rho_dt = prim(IDN,k,j,i) * dt
+                cons(IM1,k,j,i) += rho_dt * (two_omega * prim(IVZ,k,j,i) + gas_accel_x);
+                cons(IM3,k,j,i) -= rho_dt * omega_half * prim(IVX,k,j,i)
+
+def DustFluidSourceTerms():
+    """Adds source terms to the dust fluid.
+
+    Apply the Coriolis and centrifugal forces and linear gravity from the star.
+    """
+    for k in grid[0, 0, :]:
+        for j in grid[0, :, 0]:
+            for i in grid[:, 0, 0]:
+                Real rho_dt = prim(IDN,k,j,i) * dt
+                cons(IM1,k,j,i) += rho_dt * (two_omega * prim(IVZ,k,j,i) + gas_accel_x);
+                cons(IM3,k,j,i) -= rho_dt * omega_half * prim(IVX,k,j,i)
+
+def DustParticles():
+    """
+    """
+    for i in particles:
+        dvpx[k] += two_omega * vpz[k];
+        dvpz[k] -= omega_half * vpx[k];
