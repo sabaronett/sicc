@@ -1,6 +1,8 @@
 # Project related
 data/
 ipynb/figs/
+old/
+*.png
 
 # VS Code
 *.code-workspace
